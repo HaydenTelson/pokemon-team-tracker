@@ -6,36 +6,36 @@
     --bg-tertiary: #16213e;
     --bg-card: rgba(26, 26, 46, 0.6);
     --bg-card-hover: rgba(26, 26, 46, 0.8);
-    
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    
+
     /* Text colors */
     --text-primary: #ffffff;
     --text-secondary: #b8b8d1;
     --text-muted: #6b6b8c;
-    
+
     /* Accent colors */
     --accent-primary: #667eea;
     --accent-secondary: #764ba2;
     --accent-success: #10b981;
     --accent-warning: #f59e0b;
     --accent-danger: #ef4444;
-    
+
     /* Borders */
     --border-color: rgba(255, 255, 255, 0.1);
     --border-radius: 12px;
     --border-radius-sm: 8px;
     --border-radius-lg: 16px;
-    
+
     /* Shadows */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
     --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.3);
-    
+
     /* Spacing */
     --spacing-xs: 0.5rem;
     --spacing-sm: 0.75rem;
@@ -43,7 +43,7 @@
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
     --spacing-2xl: 3rem;
-    
+
     /* Typography */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-size-xs: 0.75rem;
@@ -53,12 +53,12 @@
     --font-size-xl: 1.25rem;
     --font-size-2xl: 1.5rem;
     --font-size-3xl: 2rem;
-    
+
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-base: 250ms ease;
     --transition-slow: 350ms ease;
-    
+
     /* Pokemon Type Colors */
     --type-normal: #A8A878;
     --type-fire: #F08030;
@@ -192,6 +192,7 @@ body {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -474,24 +475,169 @@ body {
 }
 
 /* Type-specific colors */
-.type-badge.normal { background: var(--type-normal); }
-.type-badge.fire { background: var(--type-fire); }
-.type-badge.water { background: var(--type-water); }
-.type-badge.electric { background: var(--type-electric); color: #000; }
-.type-badge.grass { background: var(--type-grass); }
-.type-badge.ice { background: var(--type-ice); }
-.type-badge.fighting { background: var(--type-fighting); }
-.type-badge.poison { background: var(--type-poison); }
-.type-badge.ground { background: var(--type-ground); }
-.type-badge.flying { background: var(--type-flying); }
-.type-badge.psychic { background: var(--type-psychic); }
-.type-badge.bug { background: var(--type-bug); }
-.type-badge.rock { background: var(--type-rock); }
-.type-badge.ghost { background: var(--type-ghost); }
-.type-badge.dragon { background: var(--type-dragon); }
-.type-badge.dark { background: var(--type-dark); }
-.type-badge.steel { background: var(--type-steel); }
-.type-badge.fairy { background: var(--type-fairy); }
+.type-badge.normal {
+    background: var(--type-normal);
+}
+
+.type-badge.fire {
+    background: var(--type-fire);
+}
+
+.type-badge.water {
+    background: var(--type-water);
+}
+
+.type-badge.electric {
+    background: var(--type-electric);
+    color: #000;
+}
+
+.type-badge.grass {
+    background: var(--type-grass);
+}
+
+.type-badge.ice {
+    background: var(--type-ice);
+}
+
+.type-badge.fighting {
+    background: var(--type-fighting);
+}
+
+.type-badge.poison {
+    background: var(--type-poison);
+}
+
+.type-badge.ground {
+    background: var(--type-ground);
+}
+
+.type-badge.flying {
+    background: var(--type-flying);
+}
+
+.type-badge.psychic {
+    background: var(--type-psychic);
+}
+
+.type-badge.bug {
+    background: var(--type-bug);
+}
+
+.type-badge.rock {
+    background: var(--type-rock);
+}
+
+.type-badge.ghost {
+    background: var(--type-ghost);
+}
+
+.type-badge.dragon {
+    background: var(--type-dragon);
+}
+
+.type-badge.dark {
+    background: var(--type-dark);
+}
+
+.type-badge.steel {
+    background: var(--type-steel);
+}
+
+.type-badge.fairy {
+    background: var(--type-fairy);
+}
+
+/* ===== Team Card Enhancements ===== */
+.selected-moves {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.selected-moves h4 {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.selected-move-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.selected-move-item::before {
+    content: "•";
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+
+.next-move-info,
+.next-evolution-info {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.next-move-info strong,
+.next-evolution-info strong {
+    color: var(--text-primary);
+}
+
+.next-move-info .level,
+.next-evolution-info .level {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+/* ===== Move Selection Tabs ===== */
+.move-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.move-tab {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-family: var(--font-family);
+}
+
+.move-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+}
+
+.move-tab.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.move-tab-content {
+    display: none;
+}
+
+.move-tab-content.active {
+    display: block;
+    animation: fadeIn var(--transition-base);
+}
 
 /* ===== Buttons ===== */
 .btn-primary,
@@ -880,28 +1026,28 @@ body {
     .app-container {
         padding: var(--spacing-md);
     }
-    
+
     .tab-nav {
         flex-direction: column;
     }
-    
+
     .team-roster {
         grid-template-columns: 1fr;
     }
-    
+
     .analysis-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .app-title {
         font-size: var(--font-size-2xl);
     }
-    
+
     .pokedex-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .generation-filter {
         justify-content: center;
     }

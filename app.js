@@ -338,7 +338,7 @@ function bulkLevelUp() {
 /**
  * Render team roster
  */
-function renderTeam() {
+async function renderTeam() {
     const roster = document.getElementById('team-roster');
     const teamCount = document.getElementById('team-count');
     const bulkLevelBtn = document.getElementById('bulk-level-up');
@@ -356,10 +356,52 @@ function renderTeam() {
         return;
     }
 
-    roster.innerHTML = state.team.map((member, index) => {
+    // Render each team member with enhanced info
+    const teamHTML = await Promise.all(state.team.map(async (member, index) => {
         const types = member.types.map(type =>
             `<span class="type-badge ${type}">${type}</span>`
         ).join('');
+
+        // Selected moves HTML
+        const selectedMovesHTML = member.selectedMoves && member.selectedMoves.length > 0 ? `
+            <div class="selected-moves">
+                <h4>Moves</h4>
+                ${member.selectedMoves.map(move => `
+                    <div class="selected-move-item">
+                        <span>${formatMoveName(move.name)}</span>
+                        <span class="type-badge ${move.type}">${move.type}</span>
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
+
+        // Get next move info
+        let nextMoveHTML = '';
+        try {
+            const pokemon = member.pokemonData || await getPokemon(member.id);
+            const upcomingMoves = getUpcomingMoves(pokemon, member.level, 1);
+            if (upcomingMoves.length > 0) {
+                const nextMove = upcomingMoves[0];
+                nextMoveHTML = `
+                    <div class="next-move-info">
+                        <strong>Next Move:</strong> ${formatMoveName(nextMove.name)} <span class="level">(Lv. ${nextMove.learnedAt})</span>
+                    </div>
+                `;
+            }
+
+            // Get next evolution info
+            const evolutionChain = await getPokemonEvolutionChain(pokemon.id);
+            const nextEvolution = getNextEvolution(pokemon.name, evolutionChain);
+            if (nextEvolution && nextEvolution.minLevel) {
+                nextMoveHTML += `
+                    <div class="next-evolution-info">
+                        <strong>Evolution:</strong> <span class="level">Lv. ${nextEvolution.minLevel}</span> (${formatPokemonName(nextEvolution.species)})
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error fetching next move/evolution:', error);
+        }
 
         return `
             <div class="team-member" data-index="${index}">
@@ -386,10 +428,14 @@ function renderTeam() {
                         <button class="level-btn" onclick="updateLevel(${index}, ${member.level + 1})">+</button>
                     </div>
                     <div class="type-badges">${types}</div>
+                    ${selectedMovesHTML}
+                    ${nextMoveHTML}
                 </div>
             </div>
         `;
-    }).join('');
+    }));
+
+    roster.innerHTML = teamHTML.join('');
 
     // Add click handlers to open detail modal
     document.querySelectorAll('.team-member').forEach((el, index) => {
@@ -411,32 +457,69 @@ async function showPokemonDetail(index) {
 
     try {
         const pokemon = member.pokemonData || await getPokemon(member.id);
-        const availableMoves = getMovesAtLevel(pokemon, member.level);
+        const allMoves = getAllLearnableMoves(pokemon);
         const upcomingMoves = getUpcomingMoves(pokemon, member.level);
         const evolutionChain = await getPokemonEvolutionChain(pokemon.id);
         const nextEvolution = getNextEvolution(pokemon.name, evolutionChain);
 
         const effectiveness = getPokemonTypeEffectiveness(member.types, state.typeData);
 
-        // Build move selection HTML
+        // Helper function to create move list HTML for a tab
+        const createMoveListHTML = (moves, showLevel = false) => {
+            if (moves.length === 0) {
+                return '<p class="empty-state">No moves available</p>';
+            }
+
+            return moves.map(move => {
+                const isSelected = member.selectedMoves.some(m => m.name === move.name);
+                const levelInfo = showLevel && move.level ? ` (Lv. ${move.level})` : '';
+                return `
+                    <div class="move-item ${isSelected ? 'selected' : ''}" data-move="${move.name}">
+                        <div>
+                            <div class="move-name">${formatMoveName(move.name)}${levelInfo}</div>
+                        </div>
+                        <button class="btn-secondary" onclick="toggleMove(${index}, '${move.name}', event)">
+                            ${isSelected ? 'Remove' : 'Add'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        // Build tabbed move selection HTML
         const moveSelectionHTML = `
             <div class="move-selection">
                 <h4>Select Moves (${member.selectedMoves.length}/4)</h4>
-                <div class="move-list">
-                    ${availableMoves.slice(0, 20).map(move => {
-            const isSelected = member.selectedMoves.some(m => m.name === move.name);
-            return `
-                            <div class="move-item ${isSelected ? 'selected' : ''}" data-move="${move.name}">
-                                <div>
-                                    <div class="move-name">${formatMoveName(move.name)}</div>
-                                    <div class="move-details">Learned at Lv. ${move.learnedAt}</div>
-                                </div>
-                                <button class="btn-secondary" onclick="toggleMove(${index}, '${move.name}', event)">
-                                    ${isSelected ? 'Remove' : 'Add'}
-                                </button>
-                            </div>
-                        `;
-        }).join('')}
+                
+                <div class="move-tabs">
+                    <button class="move-tab active" data-tab="level-up">Level-Up</button>
+                    <button class="move-tab" data-tab="tm-hm">TM/HM</button>
+                    <button class="move-tab" data-tab="egg">Egg Moves</button>
+                    <button class="move-tab" data-tab="tutor">Tutor</button>
+                </div>
+
+                <div class="move-tab-content active" data-tab-content="level-up">
+                    <div class="move-list">
+                        ${createMoveListHTML(allMoves.levelUp, true)}
+                    </div>
+                </div>
+
+                <div class="move-tab-content" data-tab-content="tm-hm">
+                    <div class="move-list">
+                        ${createMoveListHTML(allMoves.machine)}
+                    </div>
+                </div>
+
+                <div class="move-tab-content" data-tab-content="egg">
+                    <div class="move-list">
+                        ${createMoveListHTML(allMoves.egg)}
+                    </div>
+                </div>
+
+                <div class="move-tab-content" data-tab-content="tutor">
+                    <div class="move-list">
+                        ${createMoveListHTML(allMoves.tutor)}
+                    </div>
                 </div>
             </div>
         `;
@@ -500,6 +583,24 @@ async function showPokemonDetail(index) {
                 ` : ''}
             </div>
         `;
+
+        // Add tab switching functionality
+        const tabs = content.querySelectorAll('.move-tab');
+        const tabContents = content.querySelectorAll('.move-tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                content.querySelector(`[data-tab-content="${tabName}"]`).classList.add('active');
+            });
+        });
 
         modal.classList.remove('hidden');
     } catch (error) {
