@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pokémon Team Tracker - Manage your team, track moves and evolutions, and get battle recommendations">
+    <title>Pokémon Team Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">
+                <span class="pokeball-icon">⚪</span>
+                Pokémon Team Tracker
+            </h1>
+            <p class="app-subtitle">Build your perfect team</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="team-manager">
+                <span class="tab-icon">👥</span>
+                Team Manager
+            </button>
+            <button class="tab-btn" data-tab="battle-helper">
+                <span class="tab-icon">⚔️</span>
+                Battle Helper
+            </button>
+            <button class="tab-btn" data-tab="research">
+                <span class="tab-icon">🔍</span>
+                Research
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="tab-content">
+            <!-- Team Manager Tab -->
+            <section id="team-manager" class="tab-pane active">
+                <!-- Pokemon Search -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="pokemon-search" 
+                            class="search-input" 
+                            placeholder="Search Pokémon by name or number..."
+                            autocomplete="off"
+                        >
+                        <div id="search-results" class="search-results hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Team Roster -->
+                <div class="team-section">
+                    <div class="section-header">
+                        <h2>Your Team <span id="team-count" class="team-count">(0/6)</span></h2>
+                        <button id="bulk-level-up" class="btn-secondary" disabled>
+                            <span>+1 Level All</span>
+                        </button>
+                    </div>
+                    <div id="team-roster" class="team-roster">
+                        <!-- Team members will be dynamically added here -->
+                        <div class="empty-team-message">
+                            <p>No Pokémon in your team yet!</p>
+                            <p class="hint">Search above to add your first team member</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Analysis -->
+                <div class="analysis-section">
+                    <h2>Team Analysis</h2>
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h3>Type Coverage</h3>
+                            <div id="type-coverage" class="type-badges">
+                                <p class="empty-state">Add Pokémon to see coverage</p>
+                            </div>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>Team Weaknesses</h3>
+                            <div id="team-weaknesses" class="type-badges">
+                                <p class="empty-state">Add Pokémon to see weaknesses</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pokemon Detail Modal -->
+                <div id="pokemon-detail-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <button class="modal-close">&times;</button>
+                        <div id="pokemon-detail-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Battle Helper Tab -->
+            <section id="battle-helper" class="tab-pane">
+                <div class="search-section">
+                    <h2>Select Opponent</h2>
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="opponent-search" 
+                            class="search-input" 
+                            placeholder="Search opponent Pokémon..."
+                            autocomplete="off"
+                        >
+                        <div id="opponent-results" class="search-results hidden"></div>
+                    </div>
+                </div>
+
+                <div id="battle-matchup" class="battle-matchup hidden">
+                    <!-- Battle matchup details will be shown here -->
+                </div>
+            </section>
+
+            <!-- Research Tab -->
+            <section id="research" class="tab-pane">
+                <!-- Generation Filter -->
+                <div class="filter-section">
+                    <h2>Generation Filter</h2>
+                    <div class="generation-filter">
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="1" checked> Gen 1
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="2" checked> Gen 2
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="3" checked> Gen 3
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="4" checked> Gen 4
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="5" checked> Gen 5
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="6" checked> Gen 6
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="7" checked> Gen 7
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="8" checked> Gen 8
+                        </label>
+                        <label class="gen-checkbox">
+                            <input type="checkbox" value="9" checked> Gen 9
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Team Gap Recommendations -->
+                <div class="recommendations-section">
+                    <h2>Recommended Pokémon</h2>
+                    <p class="section-description">Based on your team's weaknesses and coverage gaps</p>
+                    <div id="recommendations" class="recommendations-grid">
+                        <p class="empty-state">Add Pokémon to your team to see recommendations</p>
+                    </div>
+                </div>
+
+                <!-- Pokedex Search -->
+                <div class="pokedex-section">
+                    <h2>Pokédex</h2>
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="pokedex-search" 
+                            class="search-input" 
+                            placeholder="Search any Pokémon..."
+                            autocomplete="off"
+                        >
+                        <div id="pokedex-results" class="search-results hidden"></div>
+                    </div>
+                    <div id="pokedex-detail" class="pokedex-detail hidden">
+                        <!-- Detailed Pokemon info will be shown here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="api.js"></script>
+    <script src="utils.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
